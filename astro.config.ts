@@ -67,5 +67,4 @@ export default defineConfig({
     ssr: { noExternal: ['picocss'], },
     plugins: [tailwindcss()]
   },
-  adapter: node({ mode: 'standalone' })
 });
