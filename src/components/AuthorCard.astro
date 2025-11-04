@@ -1,0 +1,63 @@
+---
+import Link from '@/components/Link.astro'
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/starwind/avatar";
+import { cn } from '@/lib/utils'
+import type { NavLink } from '@/types'
+import type { CollectionEntry } from 'astro:content'
+import SocialIcons from './SocialIcons.astro'
+
+interface Props {
+  author: CollectionEntry<'authors'>
+}
+
+const { author } = Astro.props
+const { name, avatar, bio, pronouns } = author.data
+const currentPath = Astro.url.pathname
+const isAuthorPage = currentPath === `/authors/${author.id}`
+
+const socialLinks: NavLink[] = [
+  author.data.website && { href: author.data.website, label: 'Website' },
+  author.data.github && { href: author.data.github, label: 'GitHub' },
+  author.data.twitter && { href: author.data.twitter, label: 'Twitter' },
+  author.data.linkedin && { href: author.data.linkedin, label: 'LinkedIn' },
+  author.data.mail && { href: `mailto:${author.data.mail}`, label: 'Email' },
+].filter(Boolean) as NavLink[]
+---
+
+<div
+  class="has-[a:hover]:bg-muted/50 overflow-hidden rounded-xl border p-4 transition-colors duration-300 ease-in-out"
+>
+  <div class="flex flex-wrap gap-4">
+    <Link
+      href={`/authors/${author.id}`}
+      class={cn('block', isAuthorPage && 'pointer-events-none')}
+    >
+      <Avatar class={cn(
+              'size-32 rounded-md [&>[data-slot="avatar-fallback"]]:rounded-md',
+              !isAuthorPage &&
+                'hover:ring-primary transition-shadow duration-300 hover:cursor-pointer hover:ring-2',
+            )}
+      >
+        <AvatarImage
+          src={avatar}
+          alt={`Avatar of ${name}`}
+        />
+        <AvatarFallback>{name[0]}</AvatarFallback>
+      <Avatar/>
+    </Link>
+    <div class="flex grow flex-col justify-between gap-y-4">
+      <div>
+        <div class="flex flex-wrap items-center gap-x-2">
+          <h3 class="text-lg font-medium">{name}</h3>
+          {
+            pronouns && (
+              <span class="text-muted-foreground text-sm">({pronouns})</span>
+            )
+          }
+        </div>
+        <p class="text-muted-foreground text-sm">{bio}</p>
+      </div>
+      <SocialIcons links={socialLinks} />
+    </div>
+  </div>
+</div>

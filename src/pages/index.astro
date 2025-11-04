@@ -1,11 +1,73 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
+import Layout from '@layouts/Layout.astro';
+import BlogCard from '@components/BlogCard.astro';
+import PageHead from '@components/PageHead.astro';
+import Link from '@components/Link.astro';
+import { button as buttonVariants } from '@components/starwind/button/Button.astro';
+import { SITE } from '@/consts';
+import { getRecentPosts } from '@/lib/data-utils';
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const blog = await getRecentPosts(SITE.featuredPostCount);
 ---
 
-<Layout>
-	<Welcome />
+<Layout class="max-w-3xl">
+	<PageHead slot="head" title="Home" />
+	  <section class="rounded-lg border">
+    <div class="flex flex-col space-y-1.5 p-6">
+      <h3 class="text-3xl leading-none font-medium">Hey there!</h3>
+      <p class="text-muted-foreground text-md">
+      	<span class="font-medium">Welcome to my blog!</span>
+			</p>
+    </div>
+    <div class="p-6 pt-0">
+      <p class="text-muted-foreground mb-2 text-sm">
+        This is where I'll post any interesting projects I'm working on and occasionally write posts about technology, reverse engineering, Linux, and whatever else catches my interest.
+        <!-- with <Link
+          href="https://astro.build"
+          class="text-foreground"
+          external
+          underline>Astro</Link
+        >, <Link
+          href="https://tailwindcss.com"
+          class="text-foreground"
+          external
+          underline>Tailwind</Link
+        >, and <Link
+          href="https://ui.shadcn.com"
+          class="text-foreground"
+          external
+          underline>shadcn/ui</Link
+        >. Extraordinarily loosely based on the <Link
+          href="https://astro-micro.vercel.app/"
+          class="text-foreground"
+          external
+          underline>Astro Micro</Link
+        > theme. -->
+      </p>
+    </div>
+  </section>
+  <section class="flex flex-col gap-y-4">
+    <h2 class="text-2xl font-medium">Latest posts</h2>
+    <ul class="flex flex-col gap-y-4">
+      {
+        blog.map((post) => (
+          <li>
+            <BlogCard entry={post} />
+          </li>
+        ))
+      }
+    </ul>
+    <div class="flex justify-center">
+      <Link
+        href="/blog"
+        class={buttonVariants({ variant: 'ghost', size: 'md' }) + ' group'}
+      >
+        See all posts <span
+          class="ml-1.5 transition-transform group-hover:translate-x-1"
+          >&rarr;</span
+        >
+      </Link>
+    </div>
+  </section>
+	<!-- <Welcome /> -->
 </Layout>
